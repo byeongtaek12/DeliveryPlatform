@@ -49,7 +49,7 @@ public class AuthSignupIntegrationTest extends MySQLContainerBaseTest {
 
 	@Test
 	@DisplayName("회원가입 실패: 이메일이 중복")
-	void signup_fail_user() {
+	void signup_fail_emailConflict_user() {
 
 		// given
 		var request = new SignupRequest("byeongtaek12@gmail.com", "test1234", "문무겸비",
@@ -65,6 +65,21 @@ public class AuthSignupIntegrationTest extends MySQLContainerBaseTest {
 		thenThrownBy(() -> authService.signup(request1))
 			.isInstanceOfSatisfying(BaseException.class, ex ->
 				then(ex.getErrorCode()).isEqualTo(ErrorCode.CONFLICT_EMAIL)
+			);
+	}
+
+	@Test
+	@DisplayName("회원가입 실패: 역할이 존재 하지 않음")
+	void signup_fail_role_x_user() {
+
+		// given
+		var request = new SignupRequest("byeongtaek12@gmail.com", "test1234", "문무겸비",
+			"01012341234", "use");
+
+		// when &  then
+		thenThrownBy(() -> authService.signup(request))
+			.isInstanceOfSatisfying(BaseException.class, ex ->
+				then(ex.getErrorCode()).isEqualTo(ErrorCode.USER_ROLE_BAD_REQUEST)
 			);
 	}
 
