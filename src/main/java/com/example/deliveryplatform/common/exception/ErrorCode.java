@@ -9,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum ErrorCode {
 
+	CONFLICT_EMAIL(HttpStatus.CONFLICT, "USER_001", "이미 존재하는 이메일입니다."),
+	USER_ROLE_BAD_REQUEST(HttpStatus.BAD_REQUEST,"USER_002", "없는 역할입니다"),
+
 
 	// validation 에러
 	INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "VALIDATION_999", "해당 제약사항에 맞춰 입력해주세요."),
