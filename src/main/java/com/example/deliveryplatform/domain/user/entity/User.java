@@ -68,13 +68,14 @@ public class User extends BaseEntity {
 		this.role = role;
 	}
 
-	public static User of(SignupRequest signupRequest, String encodedPassword) {
+	public static User create(String email, String encodedPassword, String nickname,
+		String phoneNumber, String role) {
 		return User.builder()
-			.email(signupRequest.getEmail())
+			.email(email)
 			.password(encodedPassword)
-			.nickname(signupRequest.getNickname())
-			.phoneNumber(signupRequest.getPhoneNumber())
-			.role(UserRole.of(signupRequest.getRole()))
+			.nickname(nickname)
+			.phoneNumber(phoneNumber)
+			.role(UserRole.of(role))
 			.build();
 	}
 }

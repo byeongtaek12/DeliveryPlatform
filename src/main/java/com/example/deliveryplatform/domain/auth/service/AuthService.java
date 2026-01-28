@@ -29,7 +29,9 @@ public class AuthService {
 
 		String encodedPassword = passwordEncoder.encode(signupRequest.getPassword());
 
-		User user = User.of(signupRequest, encodedPassword);
+		User user = User.create(signupRequest.getEmail(), encodedPassword, signupRequest.getNickname()
+		, signupRequest.getPhoneNumber(), signupRequest.getRole());
+
 
 		User savedUser = userRepository.save(user);
 
