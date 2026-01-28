@@ -54,15 +54,15 @@ public class GlobalExceptionHandler {
 			String constraintName = cve.getConstraintName();
 			if (constraintName != null) {
 				if (constraintName.contains("uk_users_email")) {
-					conflict(ErrorCode.CONFLICT_EMAIL);
+					return conflict(ErrorCode.CONFLICT_EMAIL);
 				}
 
 				if (constraintName.contains("uk_users_nickname")) {
-					conflict(ErrorCode.CONFLICT_NICKNAME);
+					return conflict(ErrorCode.CONFLICT_NICKNAME);
 				}
 
 				if (constraintName.contains("uk_users_phone")) {
-					conflict(ErrorCode.CONFLICT_PHONENUMBER);
+					return conflict(ErrorCode.CONFLICT_PHONENUMBER);
 				}
 			}
 		}
