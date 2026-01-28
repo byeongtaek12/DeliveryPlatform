@@ -7,9 +7,19 @@ public enum UserRole {
 	USER, OWNER;
 
 	public static UserRole of(String role) {
+
+		if (role == null) {
+			throw new BaseException(ErrorCode.USER_ROLE_BAD_REQUEST);
+		}
+
+		String upperCaseRole = role.trim().toUpperCase();
+		if (upperCaseRole.isEmpty()) {
+			throw new BaseException(ErrorCode.USER_ROLE_BAD_REQUEST);
+		}
+
 		try {
-			return UserRole.valueOf(role.trim().toUpperCase());
-		} catch (IllegalArgumentException | NullPointerException e) {
+			return UserRole.valueOf(upperCaseRole);
+		} catch (IllegalArgumentException e) {
 			throw new BaseException(ErrorCode.USER_ROLE_BAD_REQUEST);
 		}
 	}
