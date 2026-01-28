@@ -31,6 +31,6 @@ jobs:
         # 리눅스 파일 실행 권한
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-        # 프로젝트에 포함된 Gradle Wrapper로 실행, 이전 빌드 산출물 삭제, 컴파일 + 테스트 + 패키징 한번에 수행(현재 테스트는 제외)
+        # 프로젝트에 포함된 Gradle Wrapper로 실행, 이전 빌드 산출물 삭제, 컴파일 + 테스트 + 패키징 한번에 수행
       - name: Build (includes tests)
-        run: ./gradlew clean build -x test
+        run: ./gradlew clean build
