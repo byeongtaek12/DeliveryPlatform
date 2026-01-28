@@ -27,6 +27,14 @@ public class AuthService {
 			throw new BaseException(ErrorCode.CONFLICT_EMAIL);
 		}
 
+		if (userRepository.existsByNickname(signupRequest.getNickname())) {
+			throw new BaseException(ErrorCode.CONFLICT_NICKNAME);
+		}
+
+		if (userRepository.existsByPhoneNumber(signupRequest.getPhoneNumber())) {
+			throw new BaseException(ErrorCode.CONFLICT_PHONENUMBER);
+		}
+
 		String encodedPassword = passwordEncoder.encode(signupRequest.getPassword());
 
 		User user = User.create(signupRequest.getEmail(), encodedPassword, signupRequest.getNickname()
