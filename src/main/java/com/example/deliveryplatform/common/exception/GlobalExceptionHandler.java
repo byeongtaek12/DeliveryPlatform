@@ -3,6 +3,9 @@ package com.example.deliveryplatform.common.exception;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -41,6 +44,42 @@ public class GlobalExceptionHandler {
 
 		ErrorResponse response = ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE, errors);
 		return ResponseEntity.status(400).body(response);
+	}
+
+	@ExceptionHandler(DataIntegrityViolationException.class)
+	public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(DataIntegrityViolationException e) {
+
+		ConstraintViolationException cve = findHibernateConstraintViolation(e);
+		if (cve != null) {
+			String constraintName = cve.getConstraintName();
+			if (constraintName != null) {
+				if (constraintName.contains("uk_users_email")) {
+					conflict(ErrorCode.CONFLICT_EMAIL);
+				}
+
+				if (constraintName.contains("uk_users_nickname")) {
+					conflict(ErrorCode.CONFLICT_NICKNAME);
+				}
+
+				if (constraintName.contains("uk_users_phone")) {
+					conflict(ErrorCode.CONFLICT_PHONENUMBER);
+				}
+			}
+		}
+
+		return conflict(ErrorCode.CONFLICT_USER_DATA);
+	}
+
+	private ResponseEntity<ErrorResponse> conflict(ErrorCode errorCode) {
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorResponse.from(errorCode));
+	}
+
+	private ConstraintViolationException findHibernateConstraintViolation(Throwable t) {
+		while (t != null) {
+			if (t instanceof ConstraintViolationException cve) return cve;
+			t = t.getCause();
+		}
+		return null;
 	}
 
 }
