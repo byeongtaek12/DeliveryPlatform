@@ -12,6 +12,13 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
+
+import com.example.deliveryplatform.common.jwt.JwtFilter;
+
+import jakarta.servlet.Filter;
 
 @Configuration
 @EnableWebSecurity
@@ -19,12 +26,21 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
 	@Bean
+	public RequestMatcher publicEndpoints() {
+		var p = PathPatternRequestMatcher.withDefaults().basePath("/api");
+
+		return new OrRequestMatcher(
+			p.matcher("/auth/**")
+		);
+	}
+
+	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.csrf(AbstractHttpConfigurer::disable)
 			.sessionManagement(sm ->
 				sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.authorizeHttpRequests(auth -> auth
-				.requestMatchers("/api/auth/**")
+				.requestMatchers(publicEndpoints())
 				.permitAll()
 				.anyRequest().authenticated());
 		return http.build();
@@ -33,6 +49,11 @@ public class SecurityConfig {
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
 		return configuration.getAuthenticationManager();
+	}
+
+	@Bean
+	public Filter jwtFilter(RequestMatcher publicEndPoints) {
+		return new JwtFilter(publicEndPoints);
 	}
 
 	@Bean
