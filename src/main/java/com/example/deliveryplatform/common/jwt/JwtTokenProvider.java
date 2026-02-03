@@ -38,4 +38,13 @@ public class JwtTokenProvider {
 			.signWith(key)
 			.compact();
 	}
+
+	public Authentication getAuthentication(String accessToken) {
+		Claims claims = jwtTokenParser.extractClaims(accessToken);
+
+		Long userId = Long.valueOf(claims.getSubject());
+		UserDetails userDetails = customUserDetailsServiceImpl.loadUserById(userId);
+
+		return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+	}
 }
