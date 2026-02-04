@@ -9,7 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import com.example.deliveryplatform.common.security.CustomUserDetailsServiceImpl;
+import com.example.deliveryplatform.common.security.CustomUserDetailsService;
 import com.example.deliveryplatform.domain.user.model.UserRole;
 
 import io.jsonwebtoken.Claims;
@@ -23,7 +23,7 @@ public class JwtTokenProvider {
 	private final JwtProperties props;
 	private final SecretKey key;
 	private final JwtTokenParser jwtTokenParser;
-	private final CustomUserDetailsServiceImpl customUserDetailsServiceImpl;
+	private final CustomUserDetailsService customUserDetailsServiceImpl;
 
 	public String createToken(Long userId, UserRole userRole) {
 		Date now = new Date();
