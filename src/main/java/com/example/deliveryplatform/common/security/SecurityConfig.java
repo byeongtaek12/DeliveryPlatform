@@ -57,8 +57,8 @@ public class SecurityConfig {
 
 	@Bean
 	public JwtFilter jwtFilter(RequestMatcher publicEndPoints, JwtTokenExtractor jwtTokenExtractor,
-		JwtTokenProvider jwtTokenProvider) {
-		return new JwtFilter(publicEndPoints, jwtTokenExtractor, jwtTokenProvider);
+		JwtTokenProvider jwtTokenProvider, CustomAuthenticationEntryPoint authenticationEntryPoint) {
+		return new JwtFilter(publicEndPoints, jwtTokenExtractor, jwtTokenProvider, authenticationEntryPoint);
 	}
 
 	@Bean
