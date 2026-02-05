@@ -1,5 +1,7 @@
 package com.example.deliveryplatform.common.jwt;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Date;
 
 import javax.crypto.SecretKey;
@@ -27,7 +29,8 @@ public class JwtTokenProvider {
 
 	public String createToken(Long userId, UserRole userRole) {
 		Date now = new Date();
-		Date exp = new Date(now.getTime() + props.accessToken().expireMinutes());
+		Instant instant = now.toInstant().plus(Duration.ofMinutes(props.accessToken().expireMinutes()));
+		Date exp = Date.from(instant);
 
 		return Jwts.builder()
 			.subject(String.valueOf(userId))
