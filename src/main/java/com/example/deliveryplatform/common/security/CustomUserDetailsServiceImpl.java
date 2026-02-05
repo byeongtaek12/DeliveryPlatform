@@ -5,7 +5,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.deliveryplatform.common.exception.customException.BaseException;
 import com.example.deliveryplatform.common.exception.code.ErrorCode;
 import com.example.deliveryplatform.common.exception.customException.JwtAuthenticationException;
 import com.example.deliveryplatform.domain.user.entity.User;
