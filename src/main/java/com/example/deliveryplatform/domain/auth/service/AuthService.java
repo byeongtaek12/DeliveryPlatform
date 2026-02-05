@@ -4,7 +4,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.deliveryplatform.common.exception.BaseException;
+import com.example.deliveryplatform.common.exception.customException.BaseException;
 import com.example.deliveryplatform.common.exception.code.ErrorCode;
 import com.example.deliveryplatform.domain.auth.dto.SignupRequest;
 import com.example.deliveryplatform.domain.auth.dto.SignupResponse;

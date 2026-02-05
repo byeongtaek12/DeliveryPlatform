@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.deliveryplatform.common.exception.BaseException;
+import com.example.deliveryplatform.common.exception.customException.BaseException;
 import com.example.deliveryplatform.common.exception.code.ErrorCode;
 import com.example.deliveryplatform.domain.auth.dto.SignupRequest;
 import com.example.deliveryplatform.domain.auth.service.AuthService;
