@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.deliveryplatform.common.exception.customException.BaseException;
 import com.example.deliveryplatform.common.exception.code.ErrorCode;
+import com.example.deliveryplatform.common.exception.customException.JwtAuthenticationException;
 import com.example.deliveryplatform.domain.user.entity.User;
 import com.example.deliveryplatform.domain.user.repository.UserRepository;
 
@@ -20,7 +21,8 @@ public class CustomUserDetailsServiceImpl implements CustomUserDetailsService{
 
 	@Override
 	public UserDetails loadUserById(Long id) {
-		User foundUser = userRepository.findById(id).orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
+		User foundUser = userRepository.findById(id)
+			.orElseThrow(() -> new JwtAuthenticationException(ErrorCode.USERNAME_NOT_FOUND));
 
 		return CustomUserDetails.fromJwt(foundUser);
 	}
@@ -28,7 +30,7 @@ public class CustomUserDetailsServiceImpl implements CustomUserDetailsService{
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 		User foundUser = userRepository.findByEmail(email)
-			.orElseThrow(() -> new UsernameNotFoundException("해당 email을 가진 유저가 없습니다."));
+			.orElseThrow(() -> new JwtAuthenticationException(ErrorCode.USERNAME_NOT_FOUND));
 
 		return CustomUserDetails.fromLogin(foundUser);
 	}
