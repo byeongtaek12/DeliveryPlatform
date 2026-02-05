@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.deliveryplatform.common.exception.BaseException;
-import com.example.deliveryplatform.common.exception.ErrorCode;
+import com.example.deliveryplatform.common.exception.code.ErrorCode;
 import com.example.deliveryplatform.domain.user.entity.User;
 import com.example.deliveryplatform.domain.user.repository.UserRepository;
 

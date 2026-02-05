@@ -1,8 +1,10 @@
-package com.example.deliveryplatform.common.exception;
+package com.example.deliveryplatform.common.exception.dto;
 
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
+
+import com.example.deliveryplatform.common.exception.code.ErrorCode;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
