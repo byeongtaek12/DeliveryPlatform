@@ -27,6 +27,7 @@ public class CustomUserDetails implements UserDetails, CredentialsContainer {
 		Collection<? extends GrantedAuthority> authorities) {
 		this.userId = userId;
 		this.email = email;
+		this.password = password;
 		this.enabled = enabled;
 		this.authorities = authorities;
 	}
