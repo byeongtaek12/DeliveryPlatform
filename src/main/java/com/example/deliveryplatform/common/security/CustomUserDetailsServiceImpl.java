@@ -30,7 +30,7 @@ public class CustomUserDetailsServiceImpl implements CustomUserDetailsService{
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 		User foundUser = userRepository.findByEmail(email)
-			.orElseThrow(() -> new JwtAuthenticationException(ErrorCode.USERNAME_NOT_FOUND));
+			.orElseThrow(() -> new UsernameNotFoundException("유저가 존재하지 않습니다."));
 
 		return CustomUserDetails.fromLogin(foundUser);
 	}
