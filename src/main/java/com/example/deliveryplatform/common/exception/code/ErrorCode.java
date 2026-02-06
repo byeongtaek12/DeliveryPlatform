@@ -25,6 +25,9 @@ public enum ErrorCode {
 	INVALID_SIGNATURE_JWT(HttpStatus.UNAUTHORIZED, "JWT_006", "지원 하지 않는 토큰입니다"),
 	INVALID_JWT(HttpStatus.UNAUTHORIZED, "JWT_007", "Jwt 관련 에러 발생 기타 내용은 로그를 확인해주세요"),
 
+	// 예상치 못한 401 에러
+	AUTHENTICATION_REQUIRED(HttpStatus.UNAUTHORIZED, "AUTHENTICATION_001", "예상치 못한 401 에러 발생"),
+
 	// validation 에러
 	INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "VALIDATION_999", "해당 제약사항에 맞춰 입력해주세요."),
 
