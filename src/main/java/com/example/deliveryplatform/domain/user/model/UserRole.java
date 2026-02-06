@@ -1,7 +1,7 @@
 package com.example.deliveryplatform.domain.user.model;
 
-import com.example.deliveryplatform.common.exception.BaseException;
-import com.example.deliveryplatform.common.exception.ErrorCode;
+import com.example.deliveryplatform.common.exception.customException.BaseException;
+import com.example.deliveryplatform.common.exception.code.ErrorCode;
 
 public enum UserRole {
 	USER, OWNER;

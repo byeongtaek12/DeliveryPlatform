@@ -1,4 +1,6 @@
-package com.example.deliveryplatform.common.exception;
+package com.example.deliveryplatform.common.exception.customException;
+
+import com.example.deliveryplatform.common.exception.code.ErrorCode;
 
 import lombok.Getter;
 
