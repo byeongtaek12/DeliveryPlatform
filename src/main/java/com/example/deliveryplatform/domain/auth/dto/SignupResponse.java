@@ -16,5 +16,9 @@ public class SignupResponse {
 		return new SignupResponse(user.getId());
 	}
 
+	public static SignupResponse of(Long id) {
+		return new SignupResponse(id);
+	}
+
 
 }
