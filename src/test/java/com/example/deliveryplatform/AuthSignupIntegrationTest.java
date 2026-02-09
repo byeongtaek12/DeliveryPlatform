@@ -69,6 +69,48 @@ public class AuthSignupIntegrationTest extends MySQLContainerBaseTest {
 	}
 
 	@Test
+	@DisplayName("회원가입 실패: 닉네임이 중복")
+	void signup_fail_nickNameConflict_user() {
+
+		// given
+		var request = new SignupRequest("byeongtaek12@gmail.com", "test1234", "문무겸비",
+			"01012341234", "user");
+
+		authService.signup(request);
+		userRepository.flush();
+
+		var request1 = new SignupRequest("byeongtaek12@naver.com", "test1234", "문무겸비",
+			"01012345678", "user");
+
+		// when &  then
+		thenThrownBy(() -> authService.signup(request1))
+			.isInstanceOfSatisfying(BaseException.class, ex ->
+				then(ex.getErrorCode()).isEqualTo(ErrorCode.CONFLICT_NICKNAME)
+			);
+	}
+
+	@Test
+	@DisplayName("회원가입 실패: 번호가 중복")
+	void signup_fail_phoneNumberConflict_user() {
+
+		// given
+		var request = new SignupRequest("byeongtaek12@gmail.com", "test1234", "문무겸비",
+			"01012341234", "user");
+
+		authService.signup(request);
+		userRepository.flush();
+
+		var request1 = new SignupRequest("byeongtaek12@naver.com", "test1234", "문무겸비1",
+			"01012341234", "user");
+
+		// when &  then
+		thenThrownBy(() -> authService.signup(request1))
+			.isInstanceOfSatisfying(BaseException.class, ex ->
+				then(ex.getErrorCode()).isEqualTo(ErrorCode.CONFLICT_PHONENUMBER)
+			);
+	}
+
+	@Test
 	@DisplayName("회원가입 실패: 역할이 존재 하지 않음")
 	void signup_fail_role_x_user() {
 
