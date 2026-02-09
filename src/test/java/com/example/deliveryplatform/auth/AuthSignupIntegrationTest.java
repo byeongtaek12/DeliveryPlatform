@@ -1,4 +1,4 @@
-package com.example.deliveryplatform;
+package com.example.deliveryplatform.auth;
 
 import static org.assertj.core.api.BDDAssertions.*;
 
@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.deliveryplatform.MySQLContainerBaseTest;
 import com.example.deliveryplatform.common.exception.customException.BaseException;
 import com.example.deliveryplatform.common.exception.code.ErrorCode;
 import com.example.deliveryplatform.domain.auth.dto.SignupRequest;

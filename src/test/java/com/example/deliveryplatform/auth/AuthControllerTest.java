@@ -1,4 +1,4 @@
-package com.example.deliveryplatform;
+package com.example.deliveryplatform.auth;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
