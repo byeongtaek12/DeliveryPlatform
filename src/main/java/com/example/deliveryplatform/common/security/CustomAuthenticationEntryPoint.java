@@ -28,6 +28,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 		AuthenticationException authException) throws IOException, ServletException {
 
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+		response.setCharacterEncoding("UTF-8");
 		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
 		ErrorCode errorCode = (authException instanceof JwtAuthenticationException) ?
