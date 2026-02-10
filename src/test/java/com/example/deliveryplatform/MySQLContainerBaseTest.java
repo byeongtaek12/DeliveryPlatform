@@ -9,7 +9,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
 @ActiveProfiles("test")
-public class MySQLContainerBaseTest {
+public abstract class MySQLContainerBaseTest {
 
 	@Container
 	static MySQLContainer<?> mysql = new MySQLContainer<>("mysql:8.0")
