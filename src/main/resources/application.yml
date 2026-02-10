@@ -2,9 +2,6 @@ spring:
   application:
     name: DeliveryPlatform
 
-  profiles:
-    default: dev
-
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
 
