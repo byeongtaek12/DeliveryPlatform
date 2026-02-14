@@ -19,10 +19,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.example.deliveryplatform.common.exception.code.ErrorCode;
+import com.example.deliveryplatform.common.exception.customException.JwtAuthenticationException;
 import com.example.deliveryplatform.common.security.CustomUserDetails;
 import com.example.deliveryplatform.common.security.CustomUserDetailsService;
 import com.example.deliveryplatform.domain.user.entity.User;
 import com.example.deliveryplatform.domain.user.model.UserRole;
+import com.example.deliveryplatform.domain.user.repository.UserRepository;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.security.Keys;
@@ -87,6 +90,22 @@ class JwtTokenProviderTest {
 	}
 
 	@Test
+	@DisplayName("비정상적인 userId 입력 시 예외를 잘 던지는 지")
+	void createToken_fail() {
+
+		// given
+		UserRole userRole = UserRole.USER;
+
+		// when & then
+		assertThatThrownBy(()-> tokenProvider.createToken(null, userRole))
+			.isInstanceOf(JwtAuthenticationException.class)
+			.satisfies(ex -> {
+				JwtAuthenticationException e = (JwtAuthenticationException)ex;
+				assertThat(e.getErrorCode()).isEqualTo(ErrorCode.INVALID_JWT_ID);
+			});
+	}
+
+	@Test
 	@DisplayName("getAuthentication 성공: 실제 토큰으로 subject(userId) 파싱 후 UserDetails 로드 + Authentication 생성")
 	void getAuthentication_success_realToken() {
 		// given
@@ -126,4 +145,72 @@ class JwtTokenProviderTest {
 		assertThat(authentication.isAuthenticated()).isTrue();
 		verify(customUserDetailsService).loadUserById(1L);
 	}
+
+	@Test
+	@DisplayName("getAuthentication 실패: claim 안 subject가 null, empty, blank임")
+	void getAuthentication_fail_realToken() {
+		// given
+		JwtTokenParser mockParser = mock(JwtTokenParser.class);
+		tokenProvider = new JwtTokenProvider(props, key, mockParser, customUserDetailsService);
+
+		Claims claims = mock(Claims.class);
+		given(mockParser.extractClaims(anyString())).willReturn(claims);
+		given(claims.getSubject()).willReturn(null);
+
+		// when & then
+		assertThatThrownBy(()-> tokenProvider.getAuthentication("any"))
+			.isInstanceOf(JwtAuthenticationException.class)
+			.satisfies(ex -> {
+				JwtAuthenticationException e = (JwtAuthenticationException)ex;
+				assertThat(e.getErrorCode()).isEqualTo(ErrorCode.INVALID_JWT_SUBJECT);
+			});
+
+		verify(customUserDetailsService, never()).loadUserById(anyLong());
+	}
+
+	@Test
+	@DisplayName("getAuthentication 실패: claim 안 subject가 숫자가 아님)")
+	void getAuthentication_fail1_realToken() {
+		// given
+		JwtTokenParser mockParser = mock(JwtTokenParser.class);
+		tokenProvider = new JwtTokenProvider(props, key, mockParser, customUserDetailsService);
+
+		Claims claims = mock(Claims.class);
+		given(mockParser.extractClaims(anyString())).willReturn(claims);
+		given(claims.getSubject()).willReturn("hi");
+
+		// when & then
+		assertThatThrownBy(()-> tokenProvider.getAuthentication("any"))
+			.isInstanceOf(JwtAuthenticationException.class)
+			.satisfies(ex -> {
+				JwtAuthenticationException e = (JwtAuthenticationException)ex;
+				assertThat(e.getErrorCode()).isEqualTo(ErrorCode.INVALID_JWT_SUBJECT);
+			});
+
+		verify(customUserDetailsService, never()).loadUserById(anyLong());
+	}
+
+	@Test
+	@DisplayName("getAuthentication 실패: user 존재 x")
+	void getAuthentication_fail2_realToken() {
+		// given
+		JwtTokenParser mockParser = mock(JwtTokenParser.class);
+		tokenProvider = new JwtTokenProvider(props, key, mockParser, customUserDetailsService);
+
+		Claims claims = mock(Claims.class);
+		given(mockParser.extractClaims(anyString())).willReturn(claims);
+		given(claims.getSubject()).willReturn("1");
+		given(customUserDetailsService.loadUserById(1L))
+			.willThrow(new JwtAuthenticationException(ErrorCode.USERNAME_NOT_FOUND));
+
+		// when & then
+		assertThatThrownBy(()-> tokenProvider.getAuthentication("any"))
+			.isInstanceOf(JwtAuthenticationException.class)
+			.satisfies(ex -> {
+				JwtAuthenticationException e = (JwtAuthenticationException)ex;
+				assertThat(e.getErrorCode()).isEqualTo(ErrorCode.USERNAME_NOT_FOUND);
+			});
+	}
+
+
 }
