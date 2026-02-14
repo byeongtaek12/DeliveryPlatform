@@ -36,7 +36,7 @@ public class JwtTokenParser {
 		} catch (UnsupportedJwtException e) {
 			throw new JwtAuthenticationException(e, ErrorCode.UNSUPPORTED_JWT);
 		} catch (SecurityException e) {
-			throw new JwtAuthenticationException(e, ErrorCode.INVALID_SIGNATURE_JWT);
+			throw new JwtAuthenticationException(e, ErrorCode.INVALID_JWT_SIGNATURE);
 		} catch (IllegalArgumentException | JwtException e) {
 			throw new JwtAuthenticationException(e, ErrorCode.INVALID_JWT);
 		}
