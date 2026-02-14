@@ -35,6 +35,10 @@ public class JwtTokenProvider {
 		Instant instant = now.toInstant().plus(Duration.ofMinutes(props.accessToken().expireMinutes()));
 		Date exp = Date.from(instant);
 
+		if (userId == null || userId <= 0) {
+			throw new JwtAuthenticationException(ErrorCode.INVALID_JWT_ID);
+		}
+
 		return Jwts.builder()
 			.subject(String.valueOf(userId))
 			.claim("userRole", userRole.name())

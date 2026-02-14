@@ -22,8 +22,9 @@ public enum ErrorCode {
 	MALFORMED_JWT(HttpStatus.UNAUTHORIZED, "JWT_003", "형식이 깨져있습니다"),
 	EXPIRED_JWT(HttpStatus.UNAUTHORIZED, "JWT_004", "만료되었습니다."),
 	UNSUPPORTED_JWT(HttpStatus.UNAUTHORIZED, "JWT_005", "지원 하지 않는 토큰입니다"),
-	INVALID_SIGNATURE_JWT(HttpStatus.UNAUTHORIZED, "JWT_006", "지원 하지 않는 토큰입니다"),
+	INVALID_JWT_SIGNATURE(HttpStatus.UNAUTHORIZED, "JWT_006", "지원 하지 않는 토큰입니다"),
 	INVALID_JWT(HttpStatus.UNAUTHORIZED, "JWT_007", "Jwt 관련 에러 발생 기타 내용은 로그를 확인해주세요"),
+	INVALID_JWT_ID(HttpStatus.UNAUTHORIZED, "JWT_008", "Claim subject에 유효하지 않은 id입니다"),
 
 	// 예상치 못한 401 에러
 	AUTHENTICATION_REQUIRED(HttpStatus.UNAUTHORIZED, "AUTHENTICATION_001", "예상치 못한 401 에러 발생"),
