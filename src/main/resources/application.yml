@@ -2,9 +2,6 @@ spring:
   application:
     name: DeliveryPlatform
 
-  profiles:
-    default: dev
-
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
 
@@ -15,3 +12,7 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
+jwt:
+  issuer: DeliveryPlatform
+  access-token:
+    expire-minutes: 10

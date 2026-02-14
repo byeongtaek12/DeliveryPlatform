@@ -78,4 +78,8 @@ public class User extends BaseEntity {
 			.role(UserRole.of(role))
 			.build();
 	}
+
+	public boolean isActive() {
+		return deletedAt == null;
+	}
 }

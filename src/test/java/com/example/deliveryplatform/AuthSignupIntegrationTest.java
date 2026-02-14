@@ -8,14 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.deliveryplatform.common.exception.BaseException;
-import com.example.deliveryplatform.common.exception.ErrorCode;
+import com.example.deliveryplatform.common.exception.customException.BaseException;
+import com.example.deliveryplatform.common.exception.code.ErrorCode;
 import com.example.deliveryplatform.domain.auth.dto.SignupRequest;
 import com.example.deliveryplatform.domain.auth.service.AuthService;
 import com.example.deliveryplatform.domain.user.model.UserRole;
 import com.example.deliveryplatform.domain.user.repository.UserRepository;
 
-@SpringBootTest
+@SpringBootTest(classes = DeliveryPlatformApplication.class)
 @Transactional
 public class AuthSignupIntegrationTest extends MySQLContainerBaseTest {
 
@@ -65,6 +65,48 @@ public class AuthSignupIntegrationTest extends MySQLContainerBaseTest {
 		thenThrownBy(() -> authService.signup(request1))
 			.isInstanceOfSatisfying(BaseException.class, ex ->
 				then(ex.getErrorCode()).isEqualTo(ErrorCode.CONFLICT_EMAIL)
+			);
+	}
+
+	@Test
+	@DisplayName("회원가입 실패: 닉네임이 중복")
+	void signup_fail_nickNameConflict_user() {
+
+		// given
+		var request = new SignupRequest("byeongtaek12@gmail.com", "test1234", "문무겸비",
+			"01012341234", "user");
+
+		authService.signup(request);
+		userRepository.flush();
+
+		var request1 = new SignupRequest("byeongtaek12@naver.com", "test1234", "문무겸비",
+			"01012345678", "user");
+
+		// when &  then
+		thenThrownBy(() -> authService.signup(request1))
+			.isInstanceOfSatisfying(BaseException.class, ex ->
+				then(ex.getErrorCode()).isEqualTo(ErrorCode.CONFLICT_NICKNAME)
+			);
+	}
+
+	@Test
+	@DisplayName("회원가입 실패: 번호가 중복")
+	void signup_fail_phoneNumberConflict_user() {
+
+		// given
+		var request = new SignupRequest("byeongtaek12@gmail.com", "test1234", "문무겸비",
+			"01012341234", "user");
+
+		authService.signup(request);
+		userRepository.flush();
+
+		var request1 = new SignupRequest("byeongtaek12@naver.com", "test1234", "문무겸비1",
+			"01012341234", "user");
+
+		// when &  then
+		thenThrownBy(() -> authService.signup(request1))
+			.isInstanceOfSatisfying(BaseException.class, ex ->
+				then(ex.getErrorCode()).isEqualTo(ErrorCode.CONFLICT_PHONENUMBER)
 			);
 	}
 
