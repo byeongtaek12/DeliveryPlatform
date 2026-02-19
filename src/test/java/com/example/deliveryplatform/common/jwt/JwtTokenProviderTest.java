@@ -25,7 +25,6 @@ import com.example.deliveryplatform.common.security.CustomUserDetails;
 import com.example.deliveryplatform.common.security.CustomUserDetailsService;
 import com.example.deliveryplatform.domain.user.entity.User;
 import com.example.deliveryplatform.domain.user.model.UserRole;
-import com.example.deliveryplatform.domain.user.repository.UserRepository;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.security.Keys;
