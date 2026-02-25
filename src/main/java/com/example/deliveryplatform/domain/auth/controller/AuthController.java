@@ -1,11 +1,14 @@
 package com.example.deliveryplatform.domain.auth.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.deliveryplatform.domain.auth.dto.LoginRequest;
+import com.example.deliveryplatform.domain.auth.dto.LoginResponse;
 import com.example.deliveryplatform.domain.auth.dto.SignupRequest;
 import com.example.deliveryplatform.domain.auth.dto.SignupResponse;
 import com.example.deliveryplatform.domain.auth.service.AuthService;
@@ -25,5 +28,11 @@ public class AuthController {
 
 		return ResponseEntity.status(201).body(authService.signup(authSignUpRequestDto));
 
+	}
+
+	@PostMapping("/login")
+	public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequestDto) {
+
+		 return ResponseEntity.status(200).body(authService.login(loginRequestDto));
 	}
 }
