@@ -1,7 +1,7 @@
 package com.example.deliveryplatform.domain.auth.service;
 
-import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -66,18 +66,21 @@ public class AuthService {
 
 		Authentication authenticated = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
 
-		CustomUserDetails principal = (CustomUserDetails)authenticated.getPrincipal();
+		if (!(authenticated.getPrincipal() instanceof CustomUserDetails userDetails)) {
+			throw new BaseException(ErrorCode.AUTH_PRINCIPAL_TYPE_MISMATCH);
+		}
 
-		Long userId = principal.getUserId();
+		Long userId = userDetails.getUserId();
 
-		List<UserRole> role = principal.getAuthorities().stream()
+		UserRole role = userDetails.getAuthorities().stream()
 			.map(GrantedAuthority::getAuthority)
 			.filter(Objects::nonNull)
-			.map(auth -> auth.replace("ROLE_", ""))
-			.map(UserRole::of)
-			.toList();
+			.map(UserRole::fromAuthority)
+			.flatMap(Optional::stream)
+			.findFirst()
+			.orElseThrow(()-> new BaseException(ErrorCode.AUTH_NO_ROLE));
 
-		String accessToken = jwtTokenProvider.createToken(userId, role.get(0));
+		String accessToken = jwtTokenProvider.createToken(userId, role);
 
 		return LoginResponse.of(userId, accessToken);
 	}
