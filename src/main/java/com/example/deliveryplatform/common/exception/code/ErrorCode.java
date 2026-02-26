@@ -26,6 +26,11 @@ public enum ErrorCode {
 	INVALID_JWT(HttpStatus.UNAUTHORIZED, "JWT_007", "Jwt 관련 에러 발생 기타 내용은 로그를 확인해주세요"),
 	INVALID_JWT_ID(HttpStatus.UNAUTHORIZED, "JWT_008", "Claim subject에 유효하지 않은 id입니다"),
 
+	// login 에러
+	AUTH_PRINCIPAL_TYPE_MISMATCH(HttpStatus.INTERNAL_SERVER_ERROR, "LOGIN_001",
+		"기대한 인증 주체 타입이 아닙니다"),
+	AUTH_NO_ROLE(HttpStatus.INTERNAL_SERVER_ERROR,"LOGIN_002", "역할이 존재하지 않습니다"),
+
 	// 예상치 못한 401 에러
 	AUTHENTICATION_REQUIRED(HttpStatus.UNAUTHORIZED, "AUTHENTICATION_001", "예상치 못한 401 에러 발생"),
 
