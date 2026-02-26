@@ -1,5 +1,7 @@
 package com.example.deliveryplatform.domain.user.model;
 
+import java.util.Optional;
+
 import com.example.deliveryplatform.common.exception.customException.BaseException;
 import com.example.deliveryplatform.common.exception.code.ErrorCode;
 
@@ -22,5 +24,16 @@ public enum UserRole {
 		} catch (IllegalArgumentException e) {
 			throw new BaseException(ErrorCode.USER_ROLE_BAD_REQUEST);
 		}
+	}
+
+	public static Optional<UserRole> fromAuthority(String authority) {
+		if (authority == null || authority.isBlank()) return Optional.empty();
+
+		if (authority.startsWith("ROLE_")) {
+			String name = authority.substring("ROLE_".length());
+			return Optional.of(UserRole.of(name));
+		}
+
+		return Optional.empty();
 	}
 }
