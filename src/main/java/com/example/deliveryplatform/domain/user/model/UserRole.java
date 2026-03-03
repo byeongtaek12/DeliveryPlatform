@@ -31,7 +31,12 @@ public enum UserRole {
 
 		if (authority.startsWith("ROLE_")) {
 			String name = authority.substring("ROLE_".length());
-			return Optional.of(UserRole.of(name));
+
+			try {
+				return Optional.of(UserRole.of(name));
+			} catch (BaseException e) {
+				return Optional.empty();
+			}
 		}
 
 		return Optional.empty();
