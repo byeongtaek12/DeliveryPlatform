@@ -28,7 +28,6 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class AuthService {
 
 	private final UserRepository userRepository;
@@ -36,6 +35,7 @@ public class AuthService {
 	private final AuthenticationManager authenticationManager;
 	private final JwtTokenProvider jwtTokenProvider;
 
+	@Transactional
 	public SignupResponse signup(SignupRequest signupRequest) {
 
 		if (userRepository.existsByEmail(signupRequest.getEmail())) {
@@ -61,6 +61,7 @@ public class AuthService {
 		return SignupResponse.from(savedUser);
 	}
 
+	@Transactional(readOnly = true)
 	public LoginResponse login(LoginRequest loginRequest) {
 		UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
 			new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword());
