@@ -4,6 +4,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -64,7 +65,13 @@ public class AuthService {
 		UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
 			new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword());
 
-		Authentication authenticated = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+		Authentication authenticated;
+
+		try {
+			authenticated = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+		} catch (BadCredentialsException e) {
+			throw new BaseException(ErrorCode.INVALID_CREDENTIALS);
+		}
 
 		if (!(authenticated.getPrincipal() instanceof CustomUserDetails userDetails)) {
 			throw new BaseException(ErrorCode.AUTH_PRINCIPAL_TYPE_MISMATCH);
