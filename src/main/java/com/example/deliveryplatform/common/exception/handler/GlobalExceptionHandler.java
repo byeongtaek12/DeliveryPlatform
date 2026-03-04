@@ -53,6 +53,7 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(AuthenticationException.class)
 	public ResponseEntity<ErrorResponse> handleAuthenticationException(AuthenticationException e) {
+		log.warn("Authentication failed: {}", e.getMessage());
 		return ResponseEntity.status(401).body(ErrorResponse.from(ErrorCode.AUTHENTICATION_REQUIRED));
 	}
 
