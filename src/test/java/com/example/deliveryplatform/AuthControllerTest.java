@@ -123,12 +123,15 @@ public class AuthControllerTest {
 			"1"
 		);
 
-		given(authService.login(any(LoginRequest.class))).willThrow(new BaseException(ErrorCode.INVALID_CREDENTIALS));
+		given(authService.login(any(LoginRequest.class)))
+			.willThrow(new BaseException(ErrorCode.INVALID_CREDENTIALS));
 
 		mockMvc.perform(post("/api/auth/login")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(req)))
-			.andExpect(status().isUnauthorized());
+			.andExpect(status().isUnauthorized())
+		    .andExpect(jsonPath("$.errorCode").value("LOGIN_003"))
+			.andExpect(jsonPath("$.message").value("유효하지 않는 인증 자격입니다"));
 	}
 
 	@Test
@@ -141,7 +144,55 @@ public class AuthControllerTest {
 		mockMvc.perform(post("/api/auth/login")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(req)))
-			.andExpect(status().isBadRequest());
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.errorCode").value("VALIDATION_999"))
+			.andExpect(jsonPath("$.message").value("해당 제약사항에 맞춰 입력해주세요."));
+	}
+
+	@Test
+	void loginFailUserNotFound() throws Exception {
+		LoginRequest req = new LoginRequest(
+			"notFoundUser@gmail.com",
+			"1234"
+		);
+
+		given(authService.login(any(LoginRequest.class)))
+			.willThrow(new BaseException(ErrorCode.INVALID_CREDENTIALS));
+
+		mockMvc.perform(post("/api/auth/login")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(req)))
+			.andExpect(status().isUnauthorized());
+	}
+
+	@Test
+	void loginFailEmptyEmail() throws Exception {
+		LoginRequest req = new LoginRequest(
+			"",
+			"1234"
+		);
+
+		mockMvc.perform(post("/api/auth/login")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(req)))
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.errorCode").value("VALIDATION_999"))
+			.andExpect(jsonPath("$.message").value("해당 제약사항에 맞춰 입력해주세요."));
+	}
+
+	@Test
+	void loginFailInvalidEmailFormat() throws Exception {
+		LoginRequest req = new LoginRequest(
+			"invalidFormat",
+			"1234"
+		);
+
+		mockMvc.perform(post("/api/auth/login")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(req)))
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.errorCode").value("VALIDATION_999"))
+			.andExpect(jsonPath("$.message").value("해당 제약사항에 맞춰 입력해주세요."));
 	}
 
 
