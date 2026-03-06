@@ -7,6 +7,7 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -40,14 +41,18 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException e) {
 		Map<String, String> errors = new HashMap<>();
 
-		e.getBindingResult().getAllErrors().forEach(error -> {
-			String fieldName = ((FieldError)error).getField();
-			String errorMessage = error.getDefaultMessage();
-			errors.put(fieldName, errorMessage);
+		e.getBindingResult().getFieldErrors().forEach(error -> {
+			errors.put(error.getField(), error.getDefaultMessage());
 		});
 
 		ErrorResponse response = ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE, errors);
 		return ResponseEntity.status(400).body(response);
+	}
+
+	@ExceptionHandler(AuthenticationException.class)
+	public ResponseEntity<ErrorResponse> handleAuthenticationException(AuthenticationException e) {
+		log.warn("Authentication failed: {}", e.getMessage());
+		return ResponseEntity.status(401).body(ErrorResponse.from(ErrorCode.AUTHENTICATION_REQUIRED));
 	}
 
 	@ExceptionHandler(DataIntegrityViolationException.class)

@@ -1,26 +1,41 @@
 package com.example.deliveryplatform.domain.auth.service;
 
+import java.util.Objects;
+import java.util.Optional;
+
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.deliveryplatform.common.exception.customException.BaseException;
 import com.example.deliveryplatform.common.exception.code.ErrorCode;
+import com.example.deliveryplatform.common.jwt.JwtTokenProvider;
+import com.example.deliveryplatform.common.security.CustomUserDetails;
+import com.example.deliveryplatform.domain.auth.dto.LoginRequest;
+import com.example.deliveryplatform.domain.auth.dto.LoginResponse;
 import com.example.deliveryplatform.domain.auth.dto.SignupRequest;
 import com.example.deliveryplatform.domain.auth.dto.SignupResponse;
 import com.example.deliveryplatform.domain.user.entity.User;
+import com.example.deliveryplatform.domain.user.model.UserRole;
 import com.example.deliveryplatform.domain.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class AuthService {
 
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final AuthenticationManager authenticationManager;
+	private final JwtTokenProvider jwtTokenProvider;
 
+	@Transactional
 	public SignupResponse signup(SignupRequest signupRequest) {
 
 		if (userRepository.existsByEmail(signupRequest.getEmail())) {
@@ -44,6 +59,38 @@ public class AuthService {
 		User savedUser = userRepository.save(user);
 
 		return SignupResponse.from(savedUser);
+	}
+
+	@Transactional(readOnly = true)
+	public LoginResponse login(LoginRequest loginRequest) {
+		UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+			new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword());
+
+		Authentication authenticated;
+
+		try {
+			authenticated = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+		} catch (BadCredentialsException e) {
+			throw new BaseException(ErrorCode.INVALID_CREDENTIALS);
+		}
+
+		if (!(authenticated.getPrincipal() instanceof CustomUserDetails userDetails)) {
+			throw new BaseException(ErrorCode.AUTH_PRINCIPAL_TYPE_MISMATCH);
+		}
+
+		Long userId = userDetails.getUserId();
+
+		UserRole role = userDetails.getAuthorities().stream()
+			.map(GrantedAuthority::getAuthority)
+			.filter(Objects::nonNull)
+			.map(UserRole::fromAuthority)
+			.flatMap(Optional::stream)
+			.findFirst()
+			.orElseThrow(()-> new BaseException(ErrorCode.AUTH_NO_ROLE));
+
+		String accessToken = jwtTokenProvider.createToken(userId, role);
+
+		return LoginResponse.of(userId, accessToken);
 	}
 
 }
