@@ -9,7 +9,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -105,7 +105,7 @@ public class AuthControllerTest {
 
 		LoginResponse res = LoginResponse.of(1L, "testToken");
 
-		given(authService.login(any(LoginRequest.class))).willReturn(res);
+		given(authService.login(ArgumentMatchers.any(LoginRequest.class))).willReturn(res);
 
 		mockMvc.perform(post("/api/auth/login")
 			.contentType(MediaType.APPLICATION_JSON)
@@ -123,7 +123,7 @@ public class AuthControllerTest {
 			"1"
 		);
 
-		given(authService.login(any(LoginRequest.class)))
+		given(authService.login(ArgumentMatchers.any(LoginRequest.class)))
 			.willThrow(new BaseException(ErrorCode.INVALID_CREDENTIALS));
 
 		mockMvc.perform(post("/api/auth/login")
@@ -146,7 +146,10 @@ public class AuthControllerTest {
 				.content(objectMapper.writeValueAsString(req)))
 			.andExpect(status().isBadRequest())
 			.andExpect(jsonPath("$.errorCode").value("VALIDATION_999"))
-			.andExpect(jsonPath("$.message").value("해당 제약사항에 맞춰 입력해주세요."));
+			.andExpect(jsonPath("$.message").value("해당 제약사항에 맞춰 입력해주세요."))
+			.andExpect(jsonPath("$.errors").exists())
+			.andExpect(jsonPath("$.errors").isNotEmpty())
+			.andExpect(jsonPath("$.errors.password", containsString("패스워드")));
 	}
 
 	@Test
@@ -156,7 +159,7 @@ public class AuthControllerTest {
 			"1234"
 		);
 
-		given(authService.login(any(LoginRequest.class)))
+		given(authService.login(ArgumentMatchers.any(LoginRequest.class)))
 			.willThrow(new BaseException(ErrorCode.INVALID_CREDENTIALS));
 
 		mockMvc.perform(post("/api/auth/login")
@@ -177,7 +180,10 @@ public class AuthControllerTest {
 				.content(objectMapper.writeValueAsString(req)))
 			.andExpect(status().isBadRequest())
 			.andExpect(jsonPath("$.errorCode").value("VALIDATION_999"))
-			.andExpect(jsonPath("$.message").value("해당 제약사항에 맞춰 입력해주세요."));
+			.andExpect(jsonPath("$.message").value("해당 제약사항에 맞춰 입력해주세요."))
+			.andExpect(jsonPath("$.errors").exists())
+			.andExpect(jsonPath("$.errors").isNotEmpty())
+			.andExpect(jsonPath("$.errors.email", containsString("이메일")));
 	}
 
 	@Test
@@ -192,7 +198,10 @@ public class AuthControllerTest {
 				.content(objectMapper.writeValueAsString(req)))
 			.andExpect(status().isBadRequest())
 			.andExpect(jsonPath("$.errorCode").value("VALIDATION_999"))
-			.andExpect(jsonPath("$.message").value("해당 제약사항에 맞춰 입력해주세요."));
+			.andExpect(jsonPath("$.message").value("해당 제약사항에 맞춰 입력해주세요."))
+			.andExpect(jsonPath("$.errors").exists())
+			.andExpect(jsonPath("$.errors").isNotEmpty())
+			.andExpect(jsonPath("$.errors.email", containsString("이메일")));
 	}
 
 
