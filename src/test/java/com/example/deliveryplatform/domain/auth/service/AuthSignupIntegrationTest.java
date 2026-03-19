@@ -1,4 +1,4 @@
-package com.example.deliveryplatform;
+package com.example.deliveryplatform.domain.auth.service;
 
 import static org.assertj.core.api.BDDAssertions.*;
 
@@ -6,17 +6,20 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.deliveryplatform.DeliveryPlatformApplication;
+import com.example.deliveryplatform.MySQLContainerBaseTest;
 import com.example.deliveryplatform.common.exception.customException.BaseException;
 import com.example.deliveryplatform.common.exception.code.ErrorCode;
 import com.example.deliveryplatform.domain.auth.dto.SignupRequest;
-import com.example.deliveryplatform.domain.auth.service.AuthService;
 import com.example.deliveryplatform.domain.user.model.UserRole;
 import com.example.deliveryplatform.domain.user.repository.UserRepository;
 
 @SpringBootTest(classes = DeliveryPlatformApplication.class)
 @Transactional
+@ActiveProfiles("test")
 public class AuthSignupIntegrationTest extends MySQLContainerBaseTest {
 
 	@Autowired

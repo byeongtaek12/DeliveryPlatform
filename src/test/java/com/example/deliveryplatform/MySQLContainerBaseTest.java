@@ -1,5 +1,6 @@
 package com.example.deliveryplatform;
 
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -9,6 +10,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
 @ActiveProfiles("test")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public abstract class MySQLContainerBaseTest {
 
 	@Container
@@ -19,10 +21,13 @@ public abstract class MySQLContainerBaseTest {
 
 	@DynamicPropertySource
 	static void overrideProps(DynamicPropertyRegistry registry) {
+		System.out.println("=== Testcontainers JDBC URL: " + mysql.getJdbcUrl());
+		System.out.println("=== Testcontainers Username: " + mysql.getUsername());
 		registry.add("spring.datasource.url", mysql::getJdbcUrl);
 		registry.add("spring.datasource.username", mysql::getUsername);
 		registry.add("spring.datasource.password", mysql::getPassword);
-		registry.add("spring.jpa.hibernate.ddl-auto", () -> "create-drop");
+		registry.add("spring.datasource.driver-class-name", mysql::getDriverClassName);
+		registry.add("spring.jpa.hibernate.ddl-auto", () -> "create");
 	}
 
 }

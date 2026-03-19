@@ -1,4 +1,4 @@
-package com.example.deliveryplatform;
+package com.example.deliveryplatform.domain.auth.controller;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.example.deliveryplatform.common.exception.code.ErrorCode;
 import com.example.deliveryplatform.common.exception.customException.BaseException;
-import com.example.deliveryplatform.domain.auth.controller.AuthController;
 import com.example.deliveryplatform.domain.auth.dto.LoginRequest;
 import com.example.deliveryplatform.domain.auth.dto.LoginResponse;
 import com.example.deliveryplatform.domain.auth.dto.SignupRequest;
